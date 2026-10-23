@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101820">
+<title>حسابات المكتب</title>
+<style>
+:root{--bg:#0d141b;--panel:#151f29;--panel2:#1b2834;--line:#2a3a49;--text:#edf4f8;--muted:#9eb0bd;--lime:#b7e45b;--blue:#72c8ef;--red:#ff8d8d;--green:#a9e58c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Tahoma,Arial,sans-serif;line-height:1.6}
+header{padding:22px max(16px,calc((100% - 1180px)/2));background:linear-gradient(120deg,#172632,#101820);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:46px;height:46px;border-radius:14px;background:var(--lime);color:#14200b;display:grid;place-items:center;font-weight:900;font-size:23px}
+h1{font-size:23px;margin:0}header p{margin:4px 0 0;color:var(--muted);font-size:13px}
+main{max-width:1180px;margin:auto;padding:18px 14px 40px}
+nav{display:flex;gap:8px;overflow:auto;padding-bottom:14px}
+nav button,.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:11px;padding:10px 14px;font:inherit;cursor:pointer;white-space:nowrap}
+nav button.active,.primary{background:var(--lime);color:#17210d;border-color:var(--lime);font-weight:700}
+button:hover{filter:brightness(1.08)}.page{display:none}.page.active{display:block}
+.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:10px 0 18px}
+.card,.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0}
+.card .label{color:var(--muted);font-size:13px}.amount{font-size:clamp(19px,3vw,27px);font-weight:800;margin-top:8px;overflow-wrap:anywhere}.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}.panel h2{font-size:17px;margin:0 0 12px}
+form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}label{font-size:13px;color:var(--muted)}
+input,select,textarea{width:100%;background:#0d151d;color:var(--text);border:1px solid #354858;border-radius:9px;padding:11px;font:inherit;min-width:0}input:focus,select:focus{outline:2px solid #8ab73c}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.small{font-size:12px;color:var(--muted)}
+table{border-collapse:collapse;width:100%;min-width:600px}th,td{text-align:right;padding:10px 9px;border-bottom:1px solid var(--line);font-size:13px}th{color:var(--muted);font-weight:600} .tablewrap{overflow:auto;border:1px solid var(--line);border-radius:12px;margin-top:12px}
+.empty{text-align:center;color:var(--muted);padding:24px}
+.notice{background:#202c1b;border:1px solid #49632b;color:#d9f2b3;padding:11px 13px;border-radius:12px;font-size:13px;margin-bottom:14px}
+.barline{height:10px;background:#293845;border-radius:10px;overflow:hidden;margin:8px 0 12px}.barline span{display:block;height:100%;background:var(--lime);border-radius:10px}
+.reportrow{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid var(--line);padding:10px 0}
+.danger{color:var(--red)}.muted{color:var(--muted)}
+@media(max-width:760px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.grid2{grid-template-columns:1fr}header{padding:18px 14px}h1{font-size:20px}}
+@media(max-width:430px){form{grid-template-columns:1fr}.field.full{grid-column:auto}.card{padding:12px}.amount{font-size:20px}}
+</style>
+</head>
+<body>
+<header><div class="brand"><div class="logo">م</div><div><h1>حسابات المكتب</h1><p>الإيرادات والمصروفات ومخزون رولات الورق</p></div></div></header>
+<main>
+<nav aria-label="التنقل">
+<button class="active" data-page="home">الرئيسية</button><button data-page="transactions">تسجيل عملية</button><button data-page="inventory">مخزون الرولات</button><button data-page="reports">التقرير الأسبوعي</button><button data-page="data">البيانات والنسخ الاحتياطي</button>
+</nav>
+<section id="home" class="page active">
+<div class="notice">نسخة أولية تعمل على هذا المتصفح. البيانات محفوظة محليًا على نفس الجهاز؛ صدّري نسخة احتياطية بانتظام، ولا تمسحي بيانات المتصفح قبل حفظها.</div>
+<div class="cards">
+<div class="card"><div class="label">إيرادات الأسبوع</div><div id="homeIncome" class="amount green">0 ج.م</div></div>
+<div class="card"><div class="label">مصروفات الأسبوع</div><div id="homeExpense" class="amount red">0 ج.م</div></div>
+<div class="card"><div class="label">صافي الأسبوع</div><div id="homeNet" class="amount blue">0 ج.م</div></div>
+<div class="card"><div class="label">الرولات المتاحة</div><div id="homeStock" class="amount">0</div><div class="small">رول حسب وحدات المخزون المسجلة</div></div>
+</div>
+<div class="grid2">
+<div class="panel"><h2>ملخص الأقسام هذا الأسبوع</h2><div id="departmentSummary" class="muted">لسه مفيش عمليات مسجلة.</div></div>
+<div class="panel"><h2>آخر العمليات</h2><div id="recentTransactions" class="muted">لسه مفيش عمليات.</div></div>
+</div>
+</section>
+<section id="transactions" class="page">
+<div class="grid2">
+<div class="panel"><h2>تسجيل إيراد أو مصروف</h2>
+<form id="txForm">
+<div class="field"><label for="txDate">التاريخ</label><input id="txDate" type="date" required></div>
+<div class="field"><label for="txType">نوع العملية</label><select id="txType"><option value="income">إيراد</option><option value="expense">مصروف</option></select></div>
+<div class="field"><label for="txDept">القسم</label><select id="txDept"><option>طباعة الماركر</option><option>عمل الباترونات</option><option>بيع رولات الورق</option><option>مصروفات عامة</option><option>أخرى</option></select></div>
+<div class="field"><label for="txAmount">المبلغ (ج.م)</label><input id="txAmount" type="number" min="0.01" step="0.01" required placeholder="مثال: 250"></div>
+<div class="field"><label for="txPayment">طريقة الدفع</label><select id="txPayment"><option>كاش</option><option>تحويل</option></select></div>
+<div class="field"><label for="txDesc">البيان / العميل / الفاتورة</label><input id="txDesc" maxlength="120" placeholder="مثال: طباعة طلب عميل"></div>
+<div class="field full"><button class="btn primary" type="submit">حفظ العملية</button></div>
+</form><p class="small">ملاحظة: شراء رولات الورق سجليه كمصروف في قسم «بيع رولات الورق»، ثم سجلي الكمية الواردة من صفحة المخزون.</p>
+</div>
+<div class="panel"><h2>العمليات المسجلة</h2><div class="field"><label for="txFilter">عرض</label><select id="txFilter"><option value="all">كل العمليات</option><option value="income">الإيرادات فقط</option><option value="expense">المصروفات فقط</option></select></div><div class="tablewrap"><table><thead><tr><th>التاريخ</th><th>النوع</th><th>القسم</th><th>المبلغ</th><th>الدفع</th><th>البيان</th><th></th></tr></thead><tbody id="txTable"></tbody></table></div></div>
+</div>
+</section>
+<section id="inventory" class="page">
+<div class="grid2">
+<div class="panel"><h2>تسجيل حركة مخزون</h2>
+<form id="stockForm">
+<div class="field"><label for="stockDate">التاريخ</label><input id="stockDate" type="date" required></div>
+<div class="field"><label for="stockKind">نوع الحركة</label><select id="stockKind"><option value="in">إضافة كمية واردة</option><option value="out">صرف / بيع كمية</option><option value="adjust">تسوية رصيد المخزون</option></select></div>
+<div class="field"><label for="stockQty">عدد الرولات</label><input id="stockQty" type="number" min="0.01" step="0.01" required placeholder="مثال: 5"></div>
+<div class="field"><label for="stockName">نوع / مقاس الورق</label><input id="stockName" maxlength="80" required placeholder="مثال: رول ورق 90 سم"></div>
+<div class="field full"><label for="stockNote">ملاحظات</label><input id="stockNote" maxlength="120" placeholder="مورد أو رقم فاتورة"></div>
+<div class="field full"><button class="btn primary" type="submit">حفظ حركة المخزون</button></div>
+</form><p class="small">التسوية تعني ضبط الرصيد الحالي لهذا النوع بالعدد الفعلي الموجود، وليس إضافة فرق فقط.</p></div>
+<div class="panel"><h2>الرصيد الحالي حسب النوع</h2><div id="stockSummary"></div></div>
+</div>
+<div class="panel" style="margin-top:14px"><h2>سجل حركات المخزون</h2><div class="tablewrap"><table><thead><tr><th>التاريخ</th><th>نوع الورق</th><th>الحركة</th><th>الكمية</th><th>ملاحظات</th><th></th></tr></thead><tbody id="stockTable"></tbody></table></div></div>
+</section>
+<section id="reports" class="page">
+<div class="panel">
+<h2>التقرير الأسبوعي</h2><div class="grid2">
+<div class="field"><label for="weekStart">بداية الأسبوع</label><input id="weekStart" type="date"></div>
+<div class="field"><label for="weekEnd">نهاية الأسبوع</label><input id="weekEnd" type="date"></div>
+</div><div class="actions"><button class="btn primary" id="makeReport">تحديث التقرير</button><button class="btn" id="exportReport">تصدير التقرير CSV</button></div>
+<div class="cards" style="margin-top:16px">
+<div class="card"><div class="label">الإيرادات</div><div id="repIncome" class="amount green">0 ج.م</div></div>
+<div class="card"><div class="label">المصروفات</div><div id="repExpense" class="amount red">0 ج.م</div></div>
+<div class="card"><div class="label">الصافي</div><div id="repNet" class="amount blue">0 ج.م</div></div>
+<div class="card"><div class="label">عدد العمليات</div><div id="repCount" class="amount">0</div></div></div>
+<div class="grid2"><div><h2>حسب القسم</h2><div id="repDept"></div></div><div><h2>حسب طريقة الدفع</h2><div id="repPayment"></div></div></div>
+</div>
+</section>
+<section id="data" class="page">
+<div class="grid2">
+<div class="panel"><h2>نسخة احتياطية</h2><p class="muted">نزّلي نسخة JSON للاحتفاظ بكل العمليات والمخزون، ويمكن استعادتها لاحقًا من نفس الصفحة.</p><div class="actions"><button class="btn primary" id="backup">تنزيل نسخة احتياطية</button><label class="btn" for="restoreFile">استعادة نسخة</label><input id="restoreFile" type="file" accept=".json,application/json" hidden></div></div>
+<div class="panel"><h2>تصدير العمليات</h2><p class="muted">تصدير سجل العمليات والمخزون بصيغة CSV لفتحه في Excel.</p><div class="actions"><button class="btn" id="exportTx">تصدير العمليات CSV</button><button class="btn" id="exportStock">تصدير المخزون CSV</button></div></div>
+</div>
+<div class="panel" style="margin-top:14px"><h2>تنبيه مهم</h2><p>النسخة الحالية لا تستخدم حسابات مستخدمين ولا تزامن البيانات تلقائيًا بين الأجهزة؛ لأنها تحفظ البيانات داخل المتصفح نفسه. لو عايزة نفس الحسابات تظهر على الموبايل والكمبيوتر، نحتاج في مرحلة لاحقة قاعدة بيانات آمنة وتسجيل دخول.</p><button class="btn danger" id="clearAll">مسح كل البيانات</button></div>
+</section>
+<footer class="small" style="text-align:center;padding:24px 0">حسابات المكتب · نسخة تجريبية أولى</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const today=()=>new Date().toLocaleDateString('en-CA');
+const fmt=n=>Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' ج.م';
+const escapeHtml=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let transactions=[], movements=[];
+try{transactions=JSON.parse(localStorage.getItem('office_transactions')||'[]');movements=JSON.parse(localStorage.getItem('office_stock')||'[]')}catch(e){}
+function save(){localStorage.setItem('office_transactions',JSON.stringify(transactions));localStorage.setItem('office_stock',JSON.stringify(movements));renderAll()}
+function dateDefaults(){ $('txDate').value=today();$('stockDate').value=today();let d=new Date();let day=(d.getDay()+6)%7;d.setDate(d.getDate()-day);$('weekStart').value=d.toLocaleDateString('en-CA');let end=new Date(d);end.setDate(end.getDate()+6);$('weekEnd').value=end.toLocaleDateString('en-CA')}
+document.querySelectorAll('nav button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===b.dataset.page));if(b.dataset.page==='reports')renderReport()}));
+$('txForm').addEventListener('submit',e=>{e.preventDefault();transactions.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),date:$('txDate').value,type:$('txType').value,dept:$('txDept').value,amount:Number($('txAmount').value),payment:$('txPayment').value,desc:$('txDesc').value.trim()});e.target.reset();$('txDate').value=today();save();alert('تم حفظ العملية')});
+$('stockForm').addEventListener('submit',e=>{e.preventDefault();let kind=$('stockKind').value,name=$('stockName').value.trim(),qty=Number($('stockQty').value);if(kind==='out'&&getStock(name)<qty){if(!confirm('الكمية المصروفة أكبر من الرصيد المسجل. هل تريدين الحفظ على أي حال؟'))return}movements.push({id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),date:$('stockDate').value,kind,qty,name,note:$('stockNote').value.trim()});e.target.reset();$('stockDate').value=today();save();alert('تم حفظ حركة المخزون')});
+function getStock(name){let sum=0;movements.filter(m=>m.name.toLowerCase()===name.toLowerCase()).forEach(m=>{if(m.kind==='in')sum+=m.qty;else if(m.kind==='out')sum-=m.qty;else sum=m.qty});return sum}
+function deleteTx(id){if(confirm('حذف العملية؟')){transactions=transactions.filter(x=>x.id!==id);save()}}
+function deleteStock(id){if(confirm('حذف حركة المخزون؟')){movements=movements.filter(x=>x.id!==id);save()}}
+function inRange(x,start,end){return x>=start&&x<=end}
+function weekDates(){return [$('weekStart').value||today(),$('weekEnd').value||today()]}
+function totals(items){return items.reduce((a,x)=>{a[x.type]+=x.amount;return a},{income:0,expense:0})}
+function renderHome(){let [s,e]=weekDates(),items=transactions.filter(x=>inRange(x.date,s,e)),t=totals(items);$('homeIncome').textContent=fmt(t.income);$('homeExpense').textContent=fmt(t.expense);$('homeNet').textContent=fmt(t.income-t.expense);$('homeStock').textContent=fmt(Object.keys(Object.fromEntries(movements.map(m=>[m.name,m.name]))).reduce((a,n)=>a+Math.max(0,getStock(n)),0)).replace(' ج.م','');
+let depts=[...new Set(items.map(x=>x.dept))];$('departmentSummary').innerHTML=depts.length?depts.map(d=>{let z=totals(items.filter(x=>x.dept===d));return `<div class="reportrow"><span>${escapeHtml(d)}</span><span><span class="green">${fmt(z.income)}</span><br><span class="red">${fmt(z.expense)}</span></span></div>`}).join(''):'لسه مفيش عمليات مسجلة للأسبوع ده.';
+let recent=[...transactions].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,5);$('recentTransactions').innerHTML=recent.length?recent.map(x=>`<div class="reportrow"><span>${escapeHtml(x.date)}<br>${escapeHtml(x.dept)}<br><small>${escapeHtml(x.desc)}</small></span><strong class="${x.type==='income'?'green':'red'}">${x.type==='income'?'+':'−'}${fmt(x.amount)}</strong></div>`).join(''):'لسه مفيش عمليات.'}
+function renderTx(){let f=$('txFilter').value,arr=[...transactions].filter(x=>f==='all'||x.type===f).sort((a,b)=>b.date.localeCompare(a.date));$('txTable').innerHTML=arr.length?arr.map(x=>`<tr><td>${escapeHtml(x.date)}</td><td class="${x.type==='income'?'green':'red'}">${x.type==='income'?'إيراد':'مصروف'}</td><td>${escapeHtml(x.dept)}</td><td>${fmt(x.amount)}</td><td>${escapeHtml(x.payment)}</td><td>${escapeHtml(x.desc)}</td><td><button class="btn" onclick="deleteTx('${x.id}')">حذف</button></td></tr>`).join(''):'<tr><td colspan="7" class="empty">لا توجد عمليات.</td></tr>'}
+$('txFilter').addEventListener('change',renderTx);
+function renderStock(){let names=[...new Set(movements.map(m=>m.name))];$('stockSummary').innerHTML=names.length?names.map(n=>`<div class="reportrow"><span>${escapeHtml(n)}</span><strong>${fmt(getStock(n)).replace(' ج.م','')} رول</strong></div>`).join(''):'<div class="empty">لم يتم تسجيل مخزون بعد.</div>';let arr=[...movements].sort((a,b)=>b.date.localeCompare(a.date));let kindLabel={in:'وارد',out:'صرف / بيع',adjust:'تسوية'};$('stockTable').innerHTML=arr.length?arr.map(m=>`<tr><td>${escapeHtml(m.date)}</td><td>${escapeHtml(m.name)}</td><td>${kindLabel[m.kind]}</td><td>${m.kind==='out'?'−':m.kind==='in'?'+':'='}${fmt(m.qty).replace(' ج.م','')}</td><td>${escapeHtml(m.note)}</td><td><button class="btn" onclick="deleteStock('${m.id}')">حذف</button></td></tr>`).join(''):'<tr><td colspan="6" class="empty">لا توجد حركات مخزون.</td></tr>'}
+function renderReport(){let [s,e]=weekDates();if(s>e){$('repDept').innerHTML='<p class="danger">تاريخ البداية لازم يكون قبل النهاية.</p>';return}let items=transactions.filter(x=>inRange(x.date,s,e)),t=totals(items);$('repIncome').textContent=fmt(t.income);$('repExpense').textContent=fmt(t.expense);$('repNet').textContent=fmt(t.income-t.expense);$('repCount').textContent=items.length;let ds=[...new Set(items.map(x=>x.dept))];$('repDept').innerHTML=ds.length?ds.map(d=>{let z=totals(items.filter(x=>x.dept===d));return `<div class="reportrow"><span>${escapeHtml(d)}</span><span>إيراد ${fmt(z.income)}<br>مصروف ${fmt(z.expense)}<br><b>الصافي ${fmt(z.income-z.expense)}</b></span></div>`}).join(''):'<p class="muted">لا توجد عمليات في الفترة المحددة.</p>';let ps=['كاش','تحويل'];$('repPayment').innerHTML=ps.map(p=>{let z=totals(items.filter(x=>x.payment===p));return `<div class="reportrow"><span>${p}</span><span>إيراد ${fmt(z.income)}<br>مصروف ${fmt(z.expense)}</span></div>`}).join('')}
+$('makeReport').addEventListener('click',renderReport);$('weekStart').addEventListener('change',renderAll);$('weekEnd').addEventListener('change',renderAll);
+function csvDownload(name,rows){let csv='\ufeff'+rows.map(r=>r.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(',')).join('\r\n');let blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();URL.revokeObjectURL(a.href)}
+$('exportTx').onclick=()=>csvDownload('office-transactions.csv',[['التاريخ','النوع','القسم','المبلغ','طريقة الدفع','البيان'],...transactions.map(x=>[x.date,x.type==='income'?'إيراد':'مصروف',x.dept,x.amount,x.payment,x.desc])]);
+$('exportStock').onclick=()=>csvDownload('office-stock.csv',[['التاريخ','نوع الورق','الحركة','الكمية','ملاحظات'],...movements.map(x=>[x.date,x.name,{in:'وارد',out:'صرف / بيع',adjust:'تسوية'}[x.kind],x.qty,x.note])]);
+$('exportReport').onclick=()=>{let [s,e]=weekDates(),items=transactions.filter(x=>inRange(x.date,s,e)),t=totals(items);csvDownload(`weekly-report-${s}-to-${e}.csv`,[['التقرير الأسبوعي',s,e],['الإيرادات',t.income],['المصروفات',t.expense],['الصافي',t.income-t.expense],[],['التاريخ','النوع','القسم','المبلغ','الدفع','البيان'],...items.map(x=>[x.date,x.type==='income'?'إيراد':'مصروف',x.dept,x.amount,x.payment,x.desc])])};
+$('backup').onclick=()=>{let blob=new Blob([JSON.stringify({version:1,transactions,movements},null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='office-accounts-backup.json';a.click();URL.revokeObjectURL(a.href)};
+$('restoreFile').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;try{let d=JSON.parse(await f.text());if(!Array.isArray(d.transactions)||!Array.isArray(d.movements))throw Error();if(confirm('استبدال البيانات الحالية بالنسخة المختارة؟')){transactions=d.transactions;movements=d.movements;save();alert('تمت استعادة النسخة')}}catch(err){alert('الملف غير صالح أو غير متوافق')}e.target.value=''});
+$('clearAll').onclick=()=>{if(confirm('تأكيد مسح جميع العمليات وحركات المخزون؟ لا يمكن التراجع. نزّلي نسخة احتياطية أولًا.')){transactions=[];movements=[];save()}}
+function renderAll(){renderHome();renderTx();renderStock();renderReport()}
+dateDefaults();renderAll();
+</script>
+</body></html>
